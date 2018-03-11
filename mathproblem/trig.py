@@ -17,6 +17,7 @@ class RightAngleTrigFunction(Enum):
 
 
 class RightAngleTrigSide(Enum):
+    Nil = 0
     Opposite = 1
     Adjacent = 2
     Hypotenuse = 3
@@ -93,11 +94,11 @@ def _get_steps_level2(trig_func: RightAngleTrigFunction, missing_side: RightAngl
         steps: List[str] = []
 
         if missing_side == RightAngleTrigSide.Hypotenuse:
-            steps.append("Calculate missing hypotenuse side: C&sup2; = {}&sup2; + {}&sup2;".format(opposite, adjacent))
+            steps.append("Calculate missing hypotenuse side: C&sup2; = {}&sup2; + {}&sup2;.".format(opposite, adjacent))
         elif missing_side == RightAngleTrigSide.Opposite:
-            steps.append("Calculate missing opposite side: {}&sup2 = A&sup2; + {}&sup2;".format(hypotenuse, adjacent))
+            steps.append("Calculate missing opposite side: {}&sup2 = A&sup2; + {}&sup2;.".format(hypotenuse, adjacent))
         else:
-            steps.append("Calculate missing adjacent side: {}&sup2 = {}&sup2; + B&sup2;".format(hypotenuse, opposite))
+            steps.append("Calculate missing adjacent side: {}&sup2 = {}&sup2; + B&sup2;.".format(hypotenuse, opposite))
 
         return steps + level1_steps
     else:
@@ -144,10 +145,11 @@ def right_angle(level: int = 1) -> RightAngleProblem:
         level -- the difficulty level of this problem.
             level 1: Right triangle measurements are a Pythagorean Triple
             Level 2: Hypotenuse value not given
+            Level 3: Random side value not given
     """
 
-    if level < 1 or level > 2:
-        raise ValueError("right angle problems must be level 1 or 2")
+    if level < 1 or level > 3:
+        raise ValueError("right angle problems must be level 1 - 3")
 
     a, b, c = _get_triple()
 
@@ -182,11 +184,25 @@ def right_angle(level: int = 1) -> RightAngleProblem:
         hypotenuse = labels[2]
         opposite = labels[0]
 
-    if level == 2:
-        problem_data.c_label = ""
+    if level == 1:
+        missing_side = RightAngleTrigSide.Nil
+    elif level == 2:
         missing_side = RightAngleTrigSide.Hypotenuse
     else:
-        missing_side = None
+        missing_side = RightAngleTrigSide(random.randint(RightAngleTrigSide.Opposite.value, RightAngleTrigSide.Hypotenuse.value))
+
+    if missing_side == RightAngleTrigSide.Hypotenuse:
+        problem_data.c_label = None
+    elif theta_vertex == RightAngleThetaVertex.VertexB:
+        if missing_side == RightAngleTrigSide.Adjacent:
+            problem_data.a_label = None
+        elif missing_side == RightAngleTrigSide.Opposite:
+            problem_data.b_label = None
+    elif theta_vertex == RightAngleThetaVertex.VertexC:
+        if missing_side == RightAngleTrigSide.Adjacent:
+            problem_data.b_label = None
+        elif missing_side == RightAngleTrigSide.Opposite:
+            problem_data.a_label = None
 
     p = RightAngleProblem()
     p.level = level
@@ -196,7 +212,7 @@ def right_angle(level: int = 1) -> RightAngleProblem:
 
     if level == 1:
         p.steps = _get_steps_level1(trig_function, adjacent, hypotenuse, opposite)
-    elif level == 2:
+    else:
         p.steps = _get_steps_level2(trig_function, missing_side, adjacent, hypotenuse, opposite)
 
     return p
