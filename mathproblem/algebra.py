@@ -12,8 +12,8 @@ class AdditionProblem(Problem):
         return str.format("Addition Problem ({}): {}", self.level, self.prompt)
 
 
-def addition(level: int = 1, min_digits: int = 1, max_digits: int = 2) -> Problem:
-    """Creates a new addition Problem
+def addition(level: int = 1, min_digits: int = 1, max_digits: int = 2) -> AdditionProblem:
+    """Creates a new Addition Problem
 
     Keyword arguments:
         level -- the difficulty level of this problem.
