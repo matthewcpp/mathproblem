@@ -153,9 +153,14 @@ class RightAngleDiagram:
         diagram.write("<g>\n")
         diagram.write(triangle(self.pt_a, self.pt_b, self.pt_c))
         diagram.write(polyline(self.bracket, 255, 0, 0))
-        diagram.write(text(self.ab_text_pos, str(self.a_label)))
-        diagram.write(text(self.ac_text_pos, str(self.b_label)))
-        diagram.write(text(self.bc_text_pos, str(self.c_label)))
+
+        if len(self.a_label) > 0:
+            diagram.write(text(self.ab_text_pos, str(self.a_label)))
+        if len(self.b_label) > 0:
+            diagram.write(text(self.ac_text_pos, str(self.b_label)))
+        if len(self.c_label) > 0:
+            diagram.write(text(self.bc_text_pos, str(self.c_label)))
+
         diagram.write(text(self.theta_pos, "&theta;"))
         diagram.write("</g>\n")
 

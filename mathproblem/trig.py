@@ -16,6 +16,12 @@ class RightAngleTrigFunction(Enum):
     Cot = 6
 
 
+class RightAngleTrigSide(Enum):
+    Opposite = 1
+    Adjacent = 2
+    Hypotenuse = 3
+
+
 class RightAngleProblem(Problem):
     def __init__(self):
         Problem.__init__(self)
@@ -34,10 +40,10 @@ def _get_triple() -> Tuple[int, int, int]:
         b = (a ** 2 - 1) / 2
         c = b + 1
 
-    return a, b, c
+    return int(a), int(b), int(c)
 
 
-def _get_steps(trig_func: RightAngleTrigFunction, adjacent: str, hypotenuse: str, opposite: str) -> List[str]:
+def _get_steps_level1(trig_func: RightAngleTrigFunction, adjacent: str, hypotenuse: str, opposite: str) -> List[str]:
     if trig_func == RightAngleTrigFunction.Sin:
         return [
             "Identify opposite side: {}.".format(opposite),
@@ -78,6 +84,26 @@ def _get_steps(trig_func: RightAngleTrigFunction, adjacent: str, hypotenuse: str
     return []
 
 
+def _get_steps_level2(trig_func: RightAngleTrigFunction, missing_side: RightAngleTrigSide,
+                      adjacent: str, hypotenuse: str, opposite: str) ->List[str]:
+
+    level1_steps = _get_steps_level1(trig_func, adjacent, hypotenuse, opposite)
+
+    if _side_needed(trig_func, missing_side):
+        steps: List[str] = []
+
+        if missing_side == RightAngleTrigSide.Hypotenuse:
+            steps.append("Calculate missing hypotenuse side: C&sup2; = {}&sup2; + {}&sup2;".format(opposite, adjacent))
+        elif missing_side == RightAngleTrigSide.Opposite:
+            steps.append("Calculate missing opposite side: {}&sup2 = A&sup2; + {}&sup2;".format(hypotenuse, adjacent))
+        else:
+            steps.append("Calculate missing adjacent side: {}&sup2 = {}&sup2; + B&sup2;".format(hypotenuse, opposite))
+
+        return steps + level1_steps
+    else:
+        return level1_steps
+
+
 def _get_answer(trig_func: RightAngleTrigFunction, adjacent: str, hypotenuse: str, opposite: str) -> str:
     if trig_func == RightAngleTrigFunction.Sin:
         return "{}/{}.".format(opposite, hypotenuse)
@@ -95,15 +121,33 @@ def _get_answer(trig_func: RightAngleTrigFunction, adjacent: str, hypotenuse: st
     return ""
 
 
+def _side_needed(trig_func: RightAngleTrigFunction, triangle_side: RightAngleTrigSide) -> bool:
+    if trig_func == RightAngleTrigFunction.Sin:
+        return triangle_side != RightAngleTrigSide.Adjacent
+    elif trig_func == RightAngleTrigFunction.Cos:
+        return triangle_side != RightAngleTrigSide.Opposite
+    elif trig_func == RightAngleTrigFunction.Tan:
+        return triangle_side != RightAngleTrigSide.Hypotenuse
+    elif trig_func == RightAngleTrigFunction.Sec:
+        return triangle_side != RightAngleTrigSide.Opposite
+    elif trig_func == RightAngleTrigFunction.Csc:
+        return triangle_side != RightAngleTrigSide.Adjacent
+    elif trig_func == RightAngleTrigFunction.Cot:
+        return triangle_side != RightAngleTrigSide.Hypotenuse
+
+    return False
+
+
 def right_angle(level: int = 1) -> RightAngleProblem:
     """Creates a new Right Angle Trigonometry Problem
         Keyword arguments:
         level -- the difficulty level of this problem.
             level 1: Right triangle measurements are a Pythagorean Triple
+            Level 2: Hypotenuse value not given
     """
 
-    if level != 1:
-        raise ValueError("right angle problems must be level 1")
+    if level < 1 or level > 2:
+        raise ValueError("right angle problems must be level 1 or 2")
 
     a, b, c = _get_triple()
 
@@ -138,12 +182,22 @@ def right_angle(level: int = 1) -> RightAngleProblem:
         hypotenuse = labels[2]
         opposite = labels[0]
 
+    if level == 2:
+        problem_data.c_label = ""
+        missing_side = RightAngleTrigSide.Hypotenuse
+    else:
+        missing_side = None
+
     p = RightAngleProblem()
     p.level = level
     p.prompt = "Find {} &theta;".format(trig_function.name)
-    p.steps = _get_steps(trig_function, adjacent, hypotenuse, opposite)
     p.answer = _get_answer(trig_function, adjacent, hypotenuse, opposite)
     p.diagrams.append(problem_data.generate_diagram_svg())
+
+    if level == 1:
+        p.steps = _get_steps_level1(trig_function, adjacent, hypotenuse, opposite)
+    elif level == 2:
+        p.steps = _get_steps_level2(trig_function, missing_side, adjacent, hypotenuse, opposite)
 
     return p
 
