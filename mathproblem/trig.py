@@ -107,17 +107,17 @@ def _get_steps_level2(trig_func: RightAngleTrigFunction, missing_side: RightAngl
 
 def _get_answer(trig_func: RightAngleTrigFunction, adjacent: str, hypotenuse: str, opposite: str) -> str:
     if trig_func == RightAngleTrigFunction.Sin:
-        return "{}/{}.".format(opposite, hypotenuse)
+        return "{}/{}".format(opposite, hypotenuse)
     elif trig_func == RightAngleTrigFunction.Cos:
-        return "{}/{}.".format(adjacent, hypotenuse)
+        return "{}/{}".format(adjacent, hypotenuse)
     elif trig_func == RightAngleTrigFunction.Tan:
-        return "{}/{}.".format(opposite, adjacent)
+        return "{}/{}".format(opposite, adjacent)
     elif trig_func == RightAngleTrigFunction.Sec:
-        return "{}/{}.".format(hypotenuse, adjacent)
+        return "{}/{}".format(hypotenuse, adjacent)
     elif trig_func == RightAngleTrigFunction.Csc:
-        return "{}/{}.".format(hypotenuse, opposite)
+        return "{}/{}".format(hypotenuse, opposite)
     elif trig_func == RightAngleTrigFunction.Cot:
-        return "{}/{}.".format(adjacent, opposite)
+        return "{}/{}".format(adjacent, opposite)
 
     return ""
 
