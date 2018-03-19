@@ -153,7 +153,6 @@ def right_angle(level: int = 1) -> RightAngleProblem:
 
     a, b, c = _get_triple()
 
-    print(a, b, c)
     scale = 150.0
     min_side_length = 35.0
 
@@ -208,7 +207,7 @@ def right_angle(level: int = 1) -> RightAngleProblem:
     p.level = level
     p.prompt = "Find {} &theta;".format(trig_function.name)
     p.answer = _get_answer(trig_function, adjacent, hypotenuse, opposite)
-    p.diagrams.append(problem_data.generate_diagram_svg())
+    p.diagram = problem_data.generate_diagram_svg()
 
     if level == 1:
         p.steps = _get_steps_level1(trig_function, adjacent, hypotenuse, opposite)

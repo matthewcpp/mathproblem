@@ -6,6 +6,6 @@ class Problem:
     def __init__(self):
         self.prompt: str
         self.steps: List[str] = list()
-        self.diagrams: List[str] = list()
+        self.diagram: List[str] = list()
         self.answer: str
         self.level: int = 0

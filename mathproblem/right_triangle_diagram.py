@@ -1,7 +1,6 @@
 import sys
 
 from typing import List
-from io import StringIO
 from enum import Enum
 
 from .point2 import Point2, Line2, Rect
@@ -148,24 +147,23 @@ class RightAngleDiagram:
 
         return path.p1
 
-    def generate_diagram_svg(self):
-        diagram = StringIO()
+    def generate_diagram_svg(self) -> List[str]:
+        diagram: List[str] = list()
 
-        diagram.write("<g>\n")
-        diagram.write(triangle(self.pt_a, self.pt_b, self.pt_c))
-        diagram.write(polyline(self.bracket, 255, 0, 0))
+
+        diagram.append(triangle(self.pt_a, self.pt_b, self.pt_c))
+        diagram.append(polyline(self.bracket, 255, 0, 0))
 
         if self.a_label is not None:
-            diagram.write(text(self.ab_text_pos, str(self.a_label)))
+            diagram.append(text(self.ab_text_pos, str(self.a_label)))
         if self.b_label is not None:
-            diagram.write(text(self.ac_text_pos, str(self.b_label)))
+            diagram.append(text(self.ac_text_pos, str(self.b_label)))
         if self.c_label is not None:
-            diagram.write(text(self.bc_text_pos, str(self.c_label)))
+            diagram.append(text(self.bc_text_pos, str(self.c_label)))
 
-        diagram.write(text(self.theta_pos, "&theta;"))
-        diagram.write("</g>\n")
+        diagram.append(text(self.theta_pos, "&theta;"))
 
-        return diagram.getvalue()
+        return diagram
 
     def _centroid(self):
         return Point2.divide_by_constant(Point2.add(Point2.add(self.pt_a, self.pt_b), self.pt_c), 3.0)
