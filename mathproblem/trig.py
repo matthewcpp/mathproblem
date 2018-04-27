@@ -7,4 +7,4 @@ def right_angle(level: int = 1) -> RightAngleProblem:
 
 
 def graph_transform(level: int = 1) -> GraphTransformProblem:
-    return generate_graph_transform_problem(level)(level)
+    return generate_graph_transform_problem(level)
